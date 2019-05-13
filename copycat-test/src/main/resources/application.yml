@@ -1,0 +1,55 @@
+# DataSource Config
+## 如果是采用 H2的话
+#spring:
+#  datasource:
+#    driver-class-name: org.h2.Driver
+#    schema: classpath:sql/schema.sql
+#    data: classpath:sql/data.sql
+#    url: jdbc:h2:mem:processor
+#    username: root
+#    password: 123456
+
+# Mybatis-Plus
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    jdbc-type-for-null: 'null'
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+  global-config:
+    db-config:
+      id-type: id_worker
+    db-column-underline: true
+    field-strategy: 2
+    refresh-mapper: true
+  # mapper-locations: classpath:mapper/xml/*.xml
+  typeAliasesPackage: com.photowey.copycat.domain
+
+spring:
+  jackson:
+    default-property-inclusion: always
+    date-format: java.text.SimpleDateFormat
+    time-zone: GMT+8
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+    filters: stat,wall,slf4j
+    initialSize: 5
+    maxActive: 6000
+    maxOpenPreparedStatements: 20
+    maxPoolPreparedStatementPerConnectionSize: 20
+    maxWait: 60000
+    minEvictableIdleTimeMillis: 300000
+    minIdle: 5
+    poolPreparedStatements: true
+    testOnBorrow: false
+    testOnReturn: false
+    testWhileIdle: true
+    timeBetweenEvictionRunsMillis: 60000
+    useGlobalDataSourceStat: true
+    validationQuery: SELECT 1 FROM DUAL
+    url: jdbc:mysql://localhost:3306/criteria?serverTimezone=GMT&useUnicode=true&characterEncoding=UTF8&useSSL=false&tinyInt1isBit=false&useAffectedRows=true
+    username: root
+    password: 123456
+  profiles:
+    active: dev

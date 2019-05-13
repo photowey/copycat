@@ -1,0 +1,3 @@
+# EnableAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.photowey.copycat.config.MybatisPlusAutoConfiguration
