@@ -114,7 +114,6 @@ public final class CriteriaUtils {
                     String className = classMetadata.getClassName();
                     Class<?> clazz = ClassUtils.forName(className, CriteriaUtils.class.getClassLoader());
                     if (clazz.isAnnotationPresent(ConditionProcessor.class)) {
-                        System.out.println(String.format("add the class name is:[%s]", className));
                         ConditionProcessor annotation = clazz.getAnnotation(ConditionProcessor.class);
                         CriteriaAnnotationProcessor processor = (CriteriaAnnotationProcessor) clazz.getDeclaredConstructor().newInstance();
                         Class<? extends Annotation> condition = annotation.targetAnnotation();
