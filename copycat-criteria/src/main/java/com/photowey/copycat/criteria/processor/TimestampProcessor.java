@@ -1,6 +1,7 @@
 package com.photowey.copycat.criteria.processor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.photowey.copycat.criteria.annotaion.ConditionProcessor;
 import com.photowey.copycat.criteria.annotaion.Timestamp;
 import com.photowey.copycat.criteria.enums.CompareEnum;
 import com.photowey.copycat.criteria.query.AbstractQuery;
@@ -17,6 +18,7 @@ import java.lang.reflect.Field;
  * @author WcJun
  * @date 2019/05/12
  */
+@ConditionProcessor(targetAnnotation = Timestamp.class)
 public class TimestampProcessor<QUERY extends AbstractQuery, ENTITY>
         extends CriteriaAnnotationProcessorAdaptor<Timestamp, QUERY, QueryWrapper<ENTITY>, ENTITY> {
 

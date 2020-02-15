@@ -1,6 +1,7 @@
 package com.photowey.copycat.criteria.processor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.photowey.copycat.criteria.annotaion.ConditionProcessor;
 import com.photowey.copycat.criteria.annotaion.OrderBy;
 import com.photowey.copycat.criteria.enums.OrderByEnum;
 import com.photowey.copycat.criteria.query.AbstractQuery;
@@ -16,6 +17,7 @@ import java.lang.reflect.Field;
  * @author WcJun
  * @date 2019/05/12
  */
+@ConditionProcessor(targetAnnotation = OrderBy.class)
 public class OrderByProcessor<QUERY extends AbstractQuery, ENTITY>
         extends CriteriaAnnotationProcessorAdaptor<OrderBy, QUERY, QueryWrapper<ENTITY>, ENTITY> {
 

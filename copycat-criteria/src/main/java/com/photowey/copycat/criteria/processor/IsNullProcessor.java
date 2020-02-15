@@ -1,6 +1,7 @@
 package com.photowey.copycat.criteria.processor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.photowey.copycat.criteria.annotaion.ConditionProcessor;
 import com.photowey.copycat.criteria.annotaion.IsNull;
 import com.photowey.copycat.criteria.query.AbstractQuery;
 import org.springframework.util.StringUtils;
@@ -15,6 +16,7 @@ import java.lang.reflect.Field;
  * @author WcJun
  * @date 2019/05/12
  */
+@ConditionProcessor(targetAnnotation = IsNull.class)
 public class IsNullProcessor<QUERY extends AbstractQuery, ENTITY>
         extends CriteriaAnnotationProcessorAdaptor<IsNull, QUERY, QueryWrapper<ENTITY>, ENTITY> {
 

@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>com.photowey</groupId>
-    <artifactId>copycat-creteria</artifactId>
+    <artifactId>copycat-criteria</artifactId>
     <name>copycat-criteria</name>
     <description>Copycat-Criteria project for Spring Boot</description>
 

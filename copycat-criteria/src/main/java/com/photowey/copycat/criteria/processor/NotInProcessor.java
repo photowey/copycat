@@ -1,6 +1,7 @@
 package com.photowey.copycat.criteria.processor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.photowey.copycat.criteria.annotaion.ConditionProcessor;
 import com.photowey.copycat.criteria.annotaion.NotIn;
 import com.photowey.copycat.criteria.query.AbstractQuery;
 import org.springframework.util.StringUtils;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author WcJun
  * @date 2019/05/12
  */
+@ConditionProcessor(targetAnnotation = NotIn.class)
 public class NotInProcessor<QUERY extends AbstractQuery, ENTITY>
         extends CriteriaAnnotationProcessorAdaptor<NotIn, QUERY, QueryWrapper<ENTITY>, ENTITY> {
 

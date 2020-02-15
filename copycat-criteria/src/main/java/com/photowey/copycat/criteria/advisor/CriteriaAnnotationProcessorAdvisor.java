@@ -6,6 +6,7 @@ import com.photowey.copycat.criteria.exception.CopycatException;
 import com.photowey.copycat.criteria.parser.CriteriaFieldParser;
 import com.photowey.copycat.criteria.processor.*;
 import com.photowey.copycat.criteria.query.AbstractQuery;
+import com.photowey.copycat.criteria.util.CriteriaUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -24,12 +25,63 @@ public class CriteriaAnnotationProcessorAdvisor implements ProcessorAdvisor {
      */
     protected static Map<Class<? extends Annotation>, CriteriaAnnotationProcessor> ANNOTATION_PROCESSOR_CACHE = null;
 
-    /**
-     * TODO 待优化
-     */
     static {
+        // handleProcessorCacheByNew();
+        handleProcessorCacheByPackageScan();
+    }
+
+
+    /**
+     * 从缓存中查询制定的处理器
+     *
+     * @param processorClazz 处理器 Class
+     * @return 指定的条件注解处理器
+     */
+    protected static CriteriaAnnotationProcessor findProcessor(final Class<?> processorClazz) {
+        final CriteriaAnnotationProcessor processor = ANNOTATION_PROCESSOR_CACHE.get(processorClazz);
+        if (null == processor) {
+            throw new CopycatException("No processor found:%s", processorClazz);
+        }
+
+        return processor;
+    }
+
+    /**
+     * 通过条件注解完成自动包装
+     *
+     * @param query        自定义的查询对象
+     * @param queryWrapper 查询包装器
+     * @param <QUERY>      自定义的查询类型
+     * @param <ENTITY>     实体类型
+     * @return QueryWrapper
+     * @see {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
+     */
+    public static <QUERY extends AbstractQuery, ENTITY> QueryWrapper<ENTITY> advise(final QUERY query, QueryWrapper<ENTITY> queryWrapper) {
+        CriteriaFieldParser.foreachCriteriaField(query, (field, criteriaAnnotation) -> {
+            final CriteriaAnnotationProcessor processorCached = findProcessor(criteriaAnnotation.annotationType());
+            assert processorCached != null;
+            return processorCached.process(queryWrapper, field, query, criteriaAnnotation);
+        });
+
+        return queryWrapper;
+    }
+
+    // --------------------------------------------------------------------------------------- HANDLE PROCESSOR
+
+    private static void handleProcessorCacheByPackageScan() {
+        // TODO 采用包扫描的方式,替换NEW的方式, 如果失败了,再采用 NEW 的 方式
+        try {
+            String basePackage = "com.photowey.copycat.criteria.processor";
+            ANNOTATION_PROCESSOR_CACHE = CriteriaUtils.doScan(basePackage);
+        } catch (Exception e) {
+            handleProcessorCacheByNew();
+        }
+    }
+
+    private static void handleProcessorCacheByNew() {
         // TODO 根据 实际情况来分配容量
-        ANNOTATION_PROCESSOR_CACHE = new HashMap<>(1);
+        // TODO 采用包扫描实现
+        ANNOTATION_PROCESSOR_CACHE = new HashMap<>(32);
 
         // EQ
         ANNOTATION_PROCESSOR_CACHE.put(Eq.class, new EqProcessor<>());
@@ -75,42 +127,5 @@ public class CriteriaAnnotationProcessorAdvisor implements ProcessorAdvisor {
         ANNOTATION_PROCESSOR_CACHE.put(OrderBy.class, new OrderByProcessor());
         // TIMESTAMP
         ANNOTATION_PROCESSOR_CACHE.put(Timestamp.class, new TimestampProcessor());
-
     }
-
-    /**
-     * 从缓存中查询制定的处理器
-     *
-     * @param processorClazz 处理器 Class
-     * @return 指定的条件注解处理器
-     */
-    protected static CriteriaAnnotationProcessor findProcessor(final Class<?> processorClazz) {
-        final CriteriaAnnotationProcessor processor = ANNOTATION_PROCESSOR_CACHE.get(processorClazz);
-        if (null == processor) {
-            throw new CopycatException("No processor found:%s", processorClazz);
-        }
-
-        return processor;
-    }
-
-    /**
-     * 通过条件注解完成自动包装
-     *
-     * @param query        自定义的查询对象
-     * @param queryWrapper 查询包装器
-     * @param <QUERY>      自定义的查询类型
-     * @param <ENTITY>     实体类型
-     * @return QueryWrapper
-     * @see {@link com.baomidou.mybatisplus.core.conditions.query.QueryWrapper}
-     */
-    public static <QUERY extends AbstractQuery, ENTITY> QueryWrapper<ENTITY> advise(final QUERY query, QueryWrapper<ENTITY> queryWrapper) {
-        CriteriaFieldParser.foreachCriteriaField(query, (field, criteriaAnnotation) -> {
-            final CriteriaAnnotationProcessor processorCached = findProcessor(criteriaAnnotation.annotationType());
-            assert processorCached != null;
-            return processorCached.process(queryWrapper, field, query, criteriaAnnotation);
-        });
-
-        return queryWrapper;
-    }
-
 }
