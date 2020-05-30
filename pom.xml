@@ -13,7 +13,7 @@
 
     <groupId>com.photowey</groupId>
     <artifactId>copycat</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0.RELEASE</version>
     <name>copycat</name>
     <packaging>pom</packaging>
     <description>Mybatis-Plus-Criteria(Copycat) project for Spring Boot
@@ -32,12 +32,12 @@
             <dependency>
                 <groupId>com.photowey</groupId>
                 <artifactId>copycat-criteria</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.photowey</groupId>
                 <artifactId>copycat-test</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
