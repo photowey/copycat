@@ -2,6 +2,7 @@ package com.photowey.copycat.criteria.annotaion;
 
 import com.photowey.copycat.criteria.enums.ColumnNamingStrategy;
 import com.photowey.copycat.criteria.enums.OrderByEnum;
+import com.photowey.copycat.criteria.enums.HandleOrderByEnum;
 
 import java.lang.annotation.*;
 
@@ -28,14 +29,23 @@ public @interface OrderBy {
      * 排序
      * 说明: 由于解析器在解析注解的
      *
-     * @return
+     * @return {@link OrderByEnum}
      */
     OrderByEnum orderBy() default OrderByEnum.ASC;
 
     /**
      * 默认下划线
      *
-     * @return ColumnNamingStrategy
+     * @return {@link ColumnNamingStrategy}
      */
     ColumnNamingStrategy naming() default ColumnNamingStrategy.LOWER_CASE_UNDER_LINE;
+
+    /**
+     * 排序字段的类型
+     * STATIC: 静态排序 - 只要包含了 {@link OrderBy} 注解的字段均参与排序
+     * DYNAMIC: 动态排序 - 包含了 {@link OrderBy} 注解的字段 且前端传了值的字段将参与排序
+     *
+     * @return {@link HandleOrderByEnum}
+     */
+    HandleOrderByEnum handleType() default HandleOrderByEnum.STATIC;
 }

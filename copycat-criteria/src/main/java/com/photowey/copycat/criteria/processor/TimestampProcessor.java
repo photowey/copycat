@@ -5,7 +5,7 @@ import com.photowey.copycat.criteria.annotaion.ConditionProcessor;
 import com.photowey.copycat.criteria.annotaion.Timestamp;
 import com.photowey.copycat.criteria.enums.CompareEnum;
 import com.photowey.copycat.criteria.query.AbstractQuery;
-import com.photowey.copycat.criteria.util.CriteriaUtils;
+import com.photowey.copycat.criteria.util.TimeUtils;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
@@ -27,7 +27,7 @@ public class TimestampProcessor<QUERY extends AbstractQuery, ENTITY>
 
         final Object value = this.columnValue(field, query);
         if (this.isNullOrEmpty(value)) {
-            // 属性值为 Null OR Empty 不跳出 循环
+            // 属性值为 Null OR Empty 跳过
             return true;
         }
         String columnName = criteriaAnnotation.alias();
@@ -39,28 +39,27 @@ public class TimestampProcessor<QUERY extends AbstractQuery, ENTITY>
         CompareEnum compare = criteriaAnnotation.compare();
         // TODO 这儿考虑到有些是 JDK 7 的场景,所以默认采用 {@link java.util.Date}
         // TODO 如果是JDK 8 及以上的话 可以考虑采用 {@link java.time.LocalDateTime}
-        // Class<?> clazz = criteriaAnnotation.clazz();
+        Class<?> clazz = criteriaAnnotation.clazz();
         switch (compare) {
             case EQ:
-                queryWrapper.eq(null != value, columnName, CriteriaUtils.toTime(timeStamp));
+                // queryWrapper.eq(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
+                // @since 1.1.0
+                queryWrapper.eq(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
                 break;
             case NE:
-                queryWrapper.ne(null != value, columnName, CriteriaUtils.toTime(timeStamp));
+                queryWrapper.ne(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
                 break;
             case GE:
-                queryWrapper.ge(null != value, columnName, CriteriaUtils.toTime(timeStamp));
+                queryWrapper.ge(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
                 break;
             case GT:
-                queryWrapper.gt(null != value, columnName, CriteriaUtils.toTime(timeStamp));
+                queryWrapper.gt(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
                 break;
             case LE:
-                queryWrapper.le(null != value, columnName, CriteriaUtils.toTime(timeStamp));
-                break;
-            case LT:
-                queryWrapper.lt(null != value, columnName, CriteriaUtils.toTime(timeStamp));
+                queryWrapper.le(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
                 break;
             default:
-                queryWrapper.eq(null != value, columnName, CriteriaUtils.toTime(timeStamp));
+                queryWrapper.lt(null != value, columnName, TimeUtils.toTime(timeStamp, clazz));
                 break;
         }
 

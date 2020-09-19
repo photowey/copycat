@@ -168,11 +168,46 @@ public class UserServiceTest {
      * {@link com.photowey.copycat.criteria.annotaion.OrderBy}
      */
     @Test
-    public void testQueryByCriteriaOrderBy() {
+    public void testQueryByCriteriaOrderByDynamic() {
         List<Integer> ageIn = new ArrayList<>();
         ageIn.add(20);
         ageIn.add(21);
         UserQuery userQuery = new UserQuery().setAgeNotIn(ageIn).setAgeOrderBY(1);
+        List<User> users = this.userService.list(userQuery.autoWrapper());
+        Assert.assertEquals(3, users.size());
+        users.forEach(System.out::println);
+    }
+
+    /**
+     * 测试 OrderBy
+     * {@link com.photowey.copycat.criteria.annotaion.OrderBy}
+     * 即使 ageOrderBYStatic 属性 没有设置 值 也将会参与 排序
+     * 即使 age: 属性没有填充值 - 依然会参与排序
+     *
+     * Execute SQL：
+     *     SELECT
+     *         id,
+     *         name,
+     *         age,
+     *         email,
+     *         birth_day
+     *     FROM
+     *         user
+     *     WHERE
+     *         age NOT IN (
+     *             20,21
+     *         )
+     *     ORDER BY
+     *         age DESC
+     *
+     * @since 1.1.0
+     */
+    @Test
+    public void testQueryByCriteriaOrderByStatic() {
+        List<Integer> ageIn = new ArrayList<>();
+        ageIn.add(20);
+        ageIn.add(21);
+        UserQuery userQuery = new UserQuery().setAgeNotIn(ageIn);
         List<User> users = this.userService.list(userQuery.autoWrapper());
         Assert.assertEquals(3, users.size());
         users.forEach(System.out::println);

@@ -1,44 +1,103 @@
-# Copycat
-基于Mybatis-Plus,通过自定义条件注解,实现自动包装QueryWrapper查询对象
+# Mybatis-Plus 
+# 单表查询扩展(Copycat)
+> 基于 `Mybatis-Plus` , 通过自定义条件注解,实现自动包装 `QueryWrapper `查询对象
 
-一、需求描述
-* 1.使用`QueryWrapper`对较少条件进行查询,如下:
+
+## v1.0.0
+- 实现了对 Mybatis-plus 单表查询的扩展
+## v1.1.0
+- 升级 Mybatis-Plus 版本
+- 升级 Spring 版本
+- 优化包引用
+    * mybatis-plus-core
+    * mybatis-plus-extension    
+    * spring-core    
+    * slf4j-api
+- 优化 OrderBy 注解
+    * 新增 一个 OrderBy 处理类型 {@link com.photowey.copycat.criteria.enums.HandleOrderByEnum}  
+    来区分是静态的排序, 还是根据前端传入的字段动态排序  
+    {@link com.photowey.copycat.service.UserServiceTest#testQueryByCriteriaOrderByStatic}
+- 时间查询(@TimeStamp) 
+    * 支持 {@link java.time.LocalDateTime}  
+    * 依然默认采用 {@link java.util.Date}
+
+## 一、需求描述
+
+* 1.1.使用`QueryWrapper`对较少条件进行查询,如下:
 ```java
-// 官方 Github Demo
 List<User> userList = userMapper.selectList(
         new QueryWrapper<User>()
                 .lambda()
                 .ge(User::getAge, 18)
 );
 ```
-* 2.往往在真实情况下,前端一般有很多的查询条件传入后台,此时不得不手动的去包装我们的查询条件,如下:
+* 1.2.往往在真实情况下,前端一般有很多的查询条件传入后台,此时不得不手动的去包装我们的查询条件,如下:
 ```java
 List<User> userList = this.userService.list(
     new QueryWrapper<User>()
             .lambda()
             .ge(User::getAge, 18)
-            .likeLeft(User::getName, "copycat")
-            .eq(User::getEmail, "capycat@baomidou.com")
+            .likeLeft(User::getName, "ext")
+            .eq(User::getEmail, "ext@baomidou.com")
             ...
 );
 ```
-二、Mybatis-Plus 的版本
+
+
+
+## 二、轻量级 应用
+
 ```xml
 <properties>
-    <mybatis-plus.version>3.1.0</mybatis-plus.version>
+    <mybatis-plus.version>3.4.0</mybatis-plus.version>
+    <spring-core.version>5.2.8.RELEASE</spring-core.version>
+    <slf4j-log.version>1.7.25</slf4j-log.version>
 </properties>
+
+<!-- mybatis-plus -->
 <dependency>
     <groupId>com.baomidou</groupId>
-    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <artifactId>mybatis-plus-core</artifactId>
     <version>${mybatis-plus.version}</version>
+</dependency>
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-extension</artifactId>
+    <version>${mybatis-plus.version}</version>
+</dependency>
+
+<!-- spring-core -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-core</artifactId>
+    <version>${spring-core.version}</version>
+</dependency>
+
+<!-- log -->
+<dependency>
+    <groupId>org.slf4j</groupId>
+    <artifactId>slf4j-api</artifactId>
+    <version>${slf4j-log.version}</version>
 </dependency>
 ```
 
-# `CopyCat`基于自定义注解通过反射来实现自动包装查询条件,如下:
-### 自定义查询对象(XxxQuery)
+
+
+## 三、实现原理
+
+#### 	3.1.基于自定义注解通过反射来实现
+
+
+
+## 四、查询使用
+
+### 	4.1.自定义查询对象(`XxxQuery`) 
+
+> 继承 内置的 `AbstractQuery`
+
 ```java
 /**
- * UserQuery
+ * XxxQuery
  *
  * @author WcJun
  * @date 2019/05/13
@@ -48,7 +107,7 @@ List<User> userList = this.userService.list(
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserQuery extends AbstractQuery<User> implements Serializable {
+public class XxxQuery extends AbstractQuery<User> implements Serializable {
 
     private static final long serialVersionUID = -4887537311252782223L;
 
@@ -61,7 +120,14 @@ public class UserQuery extends AbstractQuery<User> implements Serializable {
     private Long userId;
 }
 ```
-AbstractQuery ({@link com.photowey.copycat.criteria.query.AbstractQuery})
+
+
+### 4.2.内置抽象的 `AbstractQuery`
+
+> {@link com.photowey.copycat.criteria.query.AbstractQuery}
+>
+> **AbstractQuery**
+
 ```java
 /**
  * 抽象查询对象
@@ -98,7 +164,10 @@ public abstract class AbstractQuery<T> extends PaginationQuery {
 }
 ```
 
-分页参数
+
+
+### 4.3.分页参数(PaginationQuery)
+> {@link com.photowey.copycat.criteria.query.PaginationQuery}
 
 ```java
 /**
@@ -108,13 +177,6 @@ public abstract class AbstractQuery<T> extends PaginationQuery {
  * @date 2019/05/12
  */
 public abstract class PaginationQuery {
-
-    /**
-     * 是否采用分页
-     */
-    protected Boolean pageEnabled = Boolean.FALSE;
-
-    // ================================================
 
     /**
      * 当前页(从自然页 1 开始)
@@ -128,10 +190,20 @@ public abstract class PaginationQuery {
     // ================================================
 
     public Integer getPageNo() {
+
+        if (null != pageNo && pageNo < 1) {
+            return 1;
+        }
+
         return null == pageNo ? 1 : pageNo;
     }
 
     public Integer getPageSize() {
+
+        if (null != pageSize && pageSize < 1) {
+            return 1;
+        }
+
         return null == pageSize ? 10 : pageSize;
     }
 
@@ -146,38 +218,49 @@ public abstract class PaginationQuery {
 
 ```
 
-###  使用
-```java
-    /**
-     * 测试 EQ
-     * {@link com.photowey.copycat.criteria.annotaion.Eq}
-     */
-    @Test
-    public void testQueryByCriteriaEq() {
-        UserQuery userQuery = new UserQuery().setUserId(1L);
-        User user = this.userService.getOne(userQuery.autoWrapper());
-        Assert.assertEquals("查询错误", "Jone", user.getName());
-    }
-```
-测试时间  
-```java
-    /**
-     * 测试 Timestamp
-     * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
-     */
-    @Test
-    public void testQueryByCriteriaTimestampGe() throws ParseException {
-        String birthDayStr = "2019-05-12 10:00:00";
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date birthDay = format.parse(birthDayStr);
-        UserQuery userQuery = new UserQuery().setAge(20).setBirthDayGe(birthDay);
-        List<User> users = this.userService.list(userQuery.autoWrapper());
-        Assert.assertEquals(3, users.size());
-        users.forEach(System.out::println);
-    }
-```
-详见:{@link com.photowey.copycat.service.UserServiceTest}  
 
-## 单元测试还未写完 后续补上,里面还有一些 bug 和很多需要优化的地方...
+
+
+## 五、测试
+
+#### 5.1.测试等于(@Eq)
+
+```java
+/**
+ * 测试 @Eq
+ * {@link com.photowey.copycat.criteria.annotaion.Eq}
+ */
+@Test
+public void testQueryByEq() {
+    UserQuery userQuery = new UserQuery().setUserId(1L);
+    User user = this.userService.getOne(userQuery.autoWrapper());
+    Assert.assertEquals("查询错误", "Jone", user.getName());
+}
+```
+
+
+
+#### 5.2.测试时间(@Timestamp)
+
+> 一些场景下，前端时间传值，可能是采用的是时间戳 - 因此 就有了 @Timestamp 的使用场景
+
+```java
+/**
+ * 测试 @Timestamp
+ * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+ */
+@Test
+public void testQueryByTimestampGe() throws ParseException {
+    String birthDayStr = "2019-05-12 10:00:00";
+    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Date birthDay = format.parse(birthDayStr);
+    // 模拟前端传参
+    UserQuery userQuery = new UserQuery().setAge(20).setBirthDayGe(birthDay);
+    
+    List<User> users = this.userService.list(userQuery.autoWrapper());
+    Assert.assertEquals(3, users.size());
+    users.forEach(System.out::println);
+}
+```
+### 具体见 : 测试类(UserServiceTest) {@link com.photowey.copycat.service.UserServiceTest} 
 ## 欢迎 发送PR
-## 待续...

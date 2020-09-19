@@ -34,7 +34,7 @@ public abstract class CriteriaAnnotationProcessorAdaptor<
      * @return 布尔值
      */
     public boolean isNullOrEmpty(final Object value) {
-        return value == null || (value instanceof String && StringUtils.isEmpty(String.valueOf(value)));
+        return value == null || (value instanceof String && StringUtils.isBlank(String.valueOf(value)));
     }
 
     /**
@@ -56,7 +56,7 @@ public abstract class CriteriaAnnotationProcessorAdaptor<
     /**
      * 根据不同的命名策略构造不同的属性字段名
      *
-     * @param field    查询的属性值
+     * @param field    查询的属性值UserQuery
      * @param strategy 数据库命名策略
      * @return 用于 SQL 查询的字段名
      */

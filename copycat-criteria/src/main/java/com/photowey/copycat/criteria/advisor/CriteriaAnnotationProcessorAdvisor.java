@@ -2,11 +2,13 @@ package com.photowey.copycat.criteria.advisor;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.photowey.copycat.criteria.annotaion.*;
+import com.photowey.copycat.criteria.constant.QueryConstant;
 import com.photowey.copycat.criteria.exception.CopycatException;
 import com.photowey.copycat.criteria.parser.CriteriaFieldParser;
 import com.photowey.copycat.criteria.processor.*;
 import com.photowey.copycat.criteria.query.AbstractQuery;
 import com.photowey.copycat.criteria.util.CriteriaUtils;
+import com.photowey.copycat.criteria.util.ScanUtils;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -71,8 +73,8 @@ public class CriteriaAnnotationProcessorAdvisor implements ProcessorAdvisor {
     private static void handleProcessorCacheByPackageScan() {
         // TODO 采用包扫描的方式,替换NEW的方式, 如果失败了,再采用 NEW 的 方式
         try {
-            String basePackage = "com.photowey.copycat.criteria.processor";
-            ANNOTATION_PROCESSOR_CACHE = CriteriaUtils.doScan(basePackage);
+            String basePackage = QueryConstant.ANNOTATION_PROCESSOR_SCAN_BASE_PACKAGE;
+            ANNOTATION_PROCESSOR_CACHE = ScanUtils.doScan(basePackage);
         } catch (Exception e) {
             handleProcessorCacheByNew();
         }

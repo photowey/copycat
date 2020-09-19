@@ -9,13 +9,6 @@ package com.photowey.copycat.criteria.query;
 public abstract class PaginationQuery {
 
     /**
-     * 是否采用分页
-     */
-    protected Boolean pageEnabled = Boolean.FALSE;
-
-    // ================================================
-
-    /**
      * 当前页(从自然页 1 开始)
      */
     protected Integer pageNo = 1;
@@ -27,10 +20,20 @@ public abstract class PaginationQuery {
     // ================================================
 
     public Integer getPageNo() {
+
+        if (null != pageNo && pageNo < 1) {
+            return 1;
+        }
+
         return null == pageNo ? 1 : pageNo;
     }
 
     public Integer getPageSize() {
+
+        if (null != pageSize && pageSize < 1) {
+            return 1;
+        }
+
         return null == pageSize ? 10 : pageSize;
     }
 

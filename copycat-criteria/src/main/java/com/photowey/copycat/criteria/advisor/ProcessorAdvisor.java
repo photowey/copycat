@@ -6,6 +6,7 @@ package com.photowey.copycat.criteria.advisor;
  * @author WcJun
  * @date 2019/05/12
  */
+@Deprecated
 public interface ProcessorAdvisor {
 
     /**

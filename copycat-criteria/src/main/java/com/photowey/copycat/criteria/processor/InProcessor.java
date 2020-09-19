@@ -26,7 +26,7 @@ public class InProcessor<QUERY extends AbstractQuery, ENTITY>
 
         final List<Object> value = (List) this.columnValue(field, query);
         if (this.isNullOrEmpty(value)) {
-            // 属性值为 Null OR Empty 不跳出 循环
+            // 属性值为 Null OR Empty 跳过
             return true;
         }
 
