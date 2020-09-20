@@ -9,6 +9,10 @@ import com.photowey.copycat.criteria.query.AbstractQuery;
 import com.photowey.copycat.domain.User;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -79,6 +83,30 @@ public class UserQuery extends AbstractQuery<User> implements Serializable {
      */
     @Timestamp(alias = "birth_day", compare = CompareEnum.GT, clazz = Date.class)
     private Long birthDayTimestamp;
+
+    /**
+     * 生日
+     */
+    @Timestamp(alias = "birth_day", compare = CompareEnum.GT, clazz = LocalDateTime.class)
+    private Long birthDayTimestampLocalDateTime;
+
+    /**
+     * 生日
+     */
+    @Timestamp(alias = "birth_day", compare = CompareEnum.GT, clazz = LocalDate.class)
+    private Long birthDayTimestampLocalDate;
+
+    /**
+     * 生日
+     */
+    @Timestamp(alias = "birth_day", compare = CompareEnum.GT, clazz = LocalTime.class)
+    private Long birthDayTimestampLocalTime;
+
+    /**
+     * 生日
+     */
+    @Timestamp(alias = "birth_day", compare = CompareEnum.GT, clazz = ZonedDateTime.class)
+    private Long birthDayTimestampZonedDateTime;
 
     @Like(alias = "name", like = SqlLike.RIGHT)
     private String userName;
@@ -185,47 +213,40 @@ public class UserQuery extends AbstractQuery<User> implements Serializable {
         return this;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserQuery userQuery = (UserQuery) o;
-        return Objects.equals(userId, userQuery.userId) &&
-                Objects.equals(age, userQuery.age) &&
-                Objects.equals(ageIn, userQuery.ageIn) &&
-                Objects.equals(ageNotIn, userQuery.ageNotIn) &&
-                Objects.equals(ageOrderBY, userQuery.ageOrderBY) &&
-                Objects.equals(ageOrderBYStatic, userQuery.ageOrderBYStatic) &&
-                Objects.equals(birthDayGe, userQuery.birthDayGe) &&
-                Objects.equals(birthDay, userQuery.birthDay) &&
-                Objects.equals(birthDayTimestamp, userQuery.birthDayTimestamp) &&
-                Objects.equals(userName, userQuery.userName) &&
-                Objects.equals(userNameNot, userQuery.userNameNot);
+    public Long getBirthDayTimestampLocalDateTime() {
+        return birthDayTimestampLocalDateTime;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(userId, age, ageIn, ageNotIn, ageOrderBY, ageOrderBYStatic, birthDayGe, birthDay, birthDayTimestamp, userName, userNameNot);
+    public UserQuery setBirthDayTimestampLocalDateTime(Long birthDayTimestampLocalDateTime) {
+        this.birthDayTimestampLocalDateTime = birthDayTimestampLocalDateTime;
+        return this;
     }
 
-    public String toString() {
-        return "UserQuery(userId=" + this.getUserId() + ", age=" + this.getAge() + ", ageIn=" + this.getAgeIn() + ", ageNotIn=" + this.getAgeNotIn() + ", ageOrderBY=" + this.getAgeOrderBY() + ", ageOrderBYStatic=" + this.getAgeOrderBYStatic() + ", birthDayGe=" + this.getBirthDayGe() + ", birthDay=" + this.getBirthDay() + ", birthDayTimestamp=" + this.getBirthDayTimestamp() + ", userName=" + this.getUserName() + ", userNameNot=" + this.getUserNameNot() + ")";
+    public Long getBirthDayTimestampLocalDate() {
+        return birthDayTimestampLocalDate;
     }
 
-    public UserQuery() {
+    public UserQuery setBirthDayTimestampLocalDate(Long birthDayTimestampLocalDate) {
+        this.birthDayTimestampLocalDate = birthDayTimestampLocalDate;
+        return this;
     }
 
-    public UserQuery(Long userId, Integer age, List<Integer> ageIn, List<Integer> ageNotIn, Integer ageOrderBY, Integer ageOrderBYStatic, Date birthDayGe, Date birthDay, Long birthDayTimestamp, String userName, String userNameNot) {
-        this.userId = userId;
-        this.age = age;
-        this.ageIn = ageIn;
-        this.ageNotIn = ageNotIn;
-        this.ageOrderBY = ageOrderBY;
-        this.ageOrderBYStatic = ageOrderBYStatic;
-        this.birthDayGe = birthDayGe;
-        this.birthDay = birthDay;
-        this.birthDayTimestamp = birthDayTimestamp;
-        this.userName = userName;
-        this.userNameNot = userNameNot;
+    public Long getBirthDayTimestampLocalTime() {
+        return birthDayTimestampLocalTime;
+    }
+
+    public UserQuery setBirthDayTimestampLocalTime(Long birthDayTimestampLocalTime) {
+        this.birthDayTimestampLocalTime = birthDayTimestampLocalTime;
+        return this;
+    }
+
+    public Long getBirthDayTimestampZonedDateTime() {
+        return birthDayTimestampZonedDateTime;
+    }
+
+    public UserQuery setBirthDayTimestampZonedDateTime(Long birthDayTimestampZonedDateTime) {
+        this.birthDayTimestampZonedDateTime = birthDayTimestampZonedDateTime;
+        return this;
     }
 }
+

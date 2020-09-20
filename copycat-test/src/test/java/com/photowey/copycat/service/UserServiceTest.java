@@ -35,6 +35,8 @@ public class UserServiceTest {
 
     /**
      * 官方 Demo
+     *
+     * @since 1.0.0
      */
     @Test
     public void testSelect() {
@@ -47,6 +49,8 @@ public class UserServiceTest {
     /**
      * 测试 EQ
      * {@link com.photowey.copycat.criteria.annotaion.Eq}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaEq() {
@@ -58,6 +62,8 @@ public class UserServiceTest {
     /**
      * 测试 GE
      * {@link com.photowey.copycat.criteria.annotaion.Eq}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaGe() {
@@ -70,6 +76,8 @@ public class UserServiceTest {
     /**
      * 测试 Timestamp
      * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaTimestampGe() throws ParseException {
@@ -85,6 +93,8 @@ public class UserServiceTest {
     /**
      * 测试 Timestamp
      * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaTimestampGt() throws ParseException {
@@ -100,6 +110,8 @@ public class UserServiceTest {
     /**
      * 测试 Timestamp
      * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaTimestampLong() {
@@ -112,6 +124,8 @@ public class UserServiceTest {
     /**
      * 测试 Like
      * {@link com.photowey.copycat.criteria.annotaion.Like}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaLike() {
@@ -124,6 +138,8 @@ public class UserServiceTest {
     /**
      * 测试 NotLike
      * {@link com.photowey.copycat.criteria.annotaion.NotLike}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaNotLike() {
@@ -136,6 +152,8 @@ public class UserServiceTest {
     /**
      * 测试 In
      * {@link com.photowey.copycat.criteria.annotaion.In}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaIn() {
@@ -151,6 +169,8 @@ public class UserServiceTest {
     /**
      * 测试 NotIn
      * {@link com.photowey.copycat.criteria.annotaion.NotIn}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaNotIn() {
@@ -166,6 +186,8 @@ public class UserServiceTest {
     /**
      * 测试 OrderBy
      * {@link com.photowey.copycat.criteria.annotaion.OrderBy}
+     *
+     * @since 1.0.0
      */
     @Test
     public void testQueryByCriteriaOrderByDynamic() {
@@ -183,22 +205,22 @@ public class UserServiceTest {
      * {@link com.photowey.copycat.criteria.annotaion.OrderBy}
      * 即使 ageOrderBYStatic 属性 没有设置 值 也将会参与 排序
      * 即使 age: 属性没有填充值 - 依然会参与排序
-     *
+     * <p>
      * Execute SQL：
-     *     SELECT
-     *         id,
-     *         name,
-     *         age,
-     *         email,
-     *         birth_day
-     *     FROM
-     *         user
-     *     WHERE
-     *         age NOT IN (
-     *             20,21
-     *         )
-     *     ORDER BY
-     *         age DESC
+     * SELECT
+     * id,
+     * name,
+     * age,
+     * email,
+     * birth_day
+     * FROM
+     * user
+     * WHERE
+     * age NOT IN (
+     * 20,21
+     * )
+     * ORDER BY
+     * age DESC
      *
      * @since 1.1.0
      */
@@ -210,6 +232,70 @@ public class UserServiceTest {
         UserQuery userQuery = new UserQuery().setAgeNotIn(ageIn);
         List<User> users = this.userService.list(userQuery.autoWrapper());
         Assert.assertEquals(3, users.size());
+        users.forEach(System.out::println);
+    }
+
+    /**
+     * 测试 Timestamp
+     * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     * {@link java.time.LocalDateTime}
+     * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+     * ==> Parameters: 20(Integer), 2019-05-11T10:00(LocalDateTime)
+     *
+     * @since 1.2.0
+     */
+    @Test
+    public void testQueryByCriteriaTimestampByLocalDateTime() {
+        UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampLocalDateTime(1557540000000L);
+        List<User> users = this.userService.list(userQuery.autoWrapper());
+        users.forEach(System.out::println);
+    }
+
+    /**
+     * 测试 Timestamp
+     * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     * {@link java.time.LocalDate}
+     * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+     * ==> Parameters: 20(Integer), 2019-05-11(LocalDate)
+     *
+     * @since 1.2.0
+     */
+    @Test
+    public void testQueryByCriteriaTimestampByLocalDate() {
+        UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampLocalDate(1557540000000L);
+        List<User> users = this.userService.list(userQuery.autoWrapper());
+        users.forEach(System.out::println);
+    }
+
+    /**
+     * 测试 Timestamp
+     * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     * {@link java.time.LocalTime}
+     * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+     * ==> Parameters: 20(Integer), 10:00(LocalTime)
+     *
+     * @since 1.2.0
+     */
+    @Test
+    public void testQueryByCriteriaTimestampByLocalTime() {
+        UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampLocalTime(1557540000000L);
+        List<User> users = this.userService.list(userQuery.autoWrapper());
+        users.forEach(System.out::println);
+    }
+
+    /**
+     * 测试 Timestamp
+     * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+     * {@link java.time.ZonedDateTime}
+     * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+     * ==> Parameters: 20(Integer), 2019-05-11T10:00+08:00[Asia/Shanghai](ZonedDateTime)
+     *
+     * @since 1.2.0
+     */
+    @Test
+    public void testQueryByCriteriaTimestampByZonedDateTime() {
+        UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampZonedDateTime(1557540000000L);
+        List<User> users = this.userService.list(userQuery.autoWrapper());
         users.forEach(System.out::println);
     }
 }

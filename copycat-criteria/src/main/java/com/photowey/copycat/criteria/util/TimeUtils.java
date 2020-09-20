@@ -1,14 +1,15 @@
 package com.photowey.copycat.criteria.util;
 
 import com.photowey.copycat.criteria.exception.CopycatException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.photowey.copycat.criteria.time.TimeProcessor;
+import com.photowey.copycat.criteria.time.TimeProcessorContainer;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -19,8 +20,6 @@ import java.util.Date;
  * @since 1.1.0
  */
 public final class TimeUtils {
-
-    private static final Logger log = LoggerFactory.getLogger(TimeUtils.class);
 
     private TimeUtils() {
         throw new AssertionError("No " + getClass().getName() + " instances for you!");
@@ -55,13 +54,26 @@ public final class TimeUtils {
         return new Date(timeStamp);
     }
 
-    public static <T> T toTime(Long timeStamp, Class<T> clazz) {
+    /**
+     * 时间戳 转 时间对象
+     *
+     * @param timeStamp 时间戳
+     * @param clazz     时间类型
+     * @param <T>       T 泛型
+     * @return T 类型
+     * @since 1.1.0
+     */
+    public static <T> T toTime(Long timeStamp, Class<?> clazz) {
         if (null == timeStamp) {
             return null;
         }
 
-        if (clazz.equals(LocalDateTime.class)) {
-            return (T) timestampToLocalDateTime(timeStamp);
+        // @since 1.2.0
+        Collection<TimeProcessor<?>> timeProcessors = TimeProcessorContainer.timeProcessors();
+        for (TimeProcessor<?> timeProcessor : timeProcessors) {
+            if (timeProcessor.supports(clazz)) {
+                return (T) timeProcessor.handleTime(timeStamp, clazz);
+            }
         }
 
         return (T) new Date(timeStamp);
@@ -72,8 +84,9 @@ public final class TimeUtils {
     /**
      * LocalDateTime -> Timestamp(Long)
      *
-     * @param localDateTime
-     * @return
+     * @param localDateTime {@link LocalDateTime}
+     * @return 时间戳 {@link Long}
+     * @since 1.1.0
      */
     public static Long localDateTimeToTimestamp(LocalDateTime localDateTime) {
         try {
@@ -88,8 +101,9 @@ public final class TimeUtils {
     /**
      * Timestamp(Long) -> LocalDateTime
      *
-     * @param timestamp
-     * @return
+     * @param timestamp 时间戳 {@link Long}
+     * @return {@link LocalDateTime}
+     * @since 1.1.0
      */
     public static LocalDateTime timestampToLocalDateTime(Long timestamp) {
         try {
@@ -104,8 +118,9 @@ public final class TimeUtils {
     /**
      * Date -> LocalDateTime
      *
-     * @param date
-     * @return
+     * @param date {@link Date}
+     * @return {@link LocalDateTime}
+     * @since 1.1.0
      */
     public static LocalDateTime dateToLocalDateTime(Date date) {
         try {
@@ -120,8 +135,9 @@ public final class TimeUtils {
     /**
      * LocalDateTime -> Date
      *
-     * @param localDateTime
-     * @return
+     * @param localDateTime {@link LocalDateTime}
+     * @return {@link Date}
+     * @since 1.1.0
      */
     public static Date localDateTimeToDate(LocalDateTime localDateTime) {
         try {
@@ -132,7 +148,5 @@ public final class TimeUtils {
             throw new CopycatException("convert the LocalDateTime to  Date exception", e);
         }
     }
-
-    // ======================================================================
 
 }

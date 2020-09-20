@@ -15,7 +15,11 @@ public interface QueryConstant {
      * @since 1.0.0
      */
     String ANNOTATION_PROCESSOR_SCAN_BASE_PACKAGE = "com.photowey.copycat.criteria.processor";
-    
+    /**
+     * 时间处理器的包路径
+     */
+    String TIME_PROCESSOR_SCAN_BASE_PACKAGE = "com.photowey.copycat.criteria.time";
+
     /**
      * 默认扫描的问题件类型
      */

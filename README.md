@@ -5,6 +5,7 @@
 
 ## v1.0.0
 - 实现了对 Mybatis-plus 单表查询的扩展
+-- -
 ## v1.1.0
 - 升级 Mybatis-Plus 版本
 - 升级 Spring 版本
@@ -20,7 +21,16 @@
 - 时间查询(@TimeStamp) 
     * 支持 {@link java.time.LocalDateTime}  
     * 依然默认采用 {@link java.util.Date}
+-- -
+## v1.2.0
+- 时间查询(@TimeStamp) 
+    * 支持 {@link java.time.LocalDate}  
+    * 支持 {@link java.time.LocalTime}  
+    * 支持 {@link java.time.ZonedDateTime}  
+    * 依然默认采用 {@link java.util.Date}
+    
 
+-- -
 ## 一、需求描述
 
 * 1.1.使用`QueryWrapper`对较少条件进行查询,如下:
@@ -246,8 +256,13 @@ public void testQueryByEq() {
 
 ```java
 /**
- * 测试 @Timestamp
+ * 测试 Timestamp
  * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+ * {@link java.time.LocalDateTime}
+ * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+ * ==> Parameters: 20(Integer), 2019-05-11T10:00(LocalDateTime)
+ *
+ * @since 1.1.0
  */
 @Test
 public void testQueryByTimestampGe() throws ParseException {
@@ -259,6 +274,54 @@ public void testQueryByTimestampGe() throws ParseException {
     
     List<User> users = this.userService.list(userQuery.autoWrapper());
     Assert.assertEquals(3, users.size());
+    users.forEach(System.out::println);
+}
+
+/**
+ * 测试 Timestamp
+ * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+ * {@link java.time.LocalDate}
+ * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+ * ==> Parameters: 20(Integer), 2019-05-11(LocalDate)
+ *
+ * @since 1.2.0
+ */
+@Test
+public void testQueryByCriteriaTimestampByLocalDate() {
+    UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampLocalDate(1557540000000L);
+    List<User> users = this.userService.list(userQuery.autoWrapper());
+    users.forEach(System.out::println);
+}
+
+/**
+ * 测试 Timestamp
+ * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+ * {@link java.time.LocalTime}
+ * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+ * ==> Parameters: 20(Integer), 10:00(LocalTime)
+ *
+ * @since 1.2.0
+ */
+@Test
+public void testQueryByCriteriaTimestampByLocalTime() {
+    UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampLocalTime(1557540000000L);
+    List<User> users = this.userService.list(userQuery.autoWrapper());
+    users.forEach(System.out::println);
+}
+
+/**
+ * 测试 Timestamp
+ * {@link com.photowey.copycat.criteria.annotaion.Timestamp}
+ * {@link java.time.ZonedDateTime}
+ * ==>  Preparing: SELECT id,name,age,email,birth_day FROM user WHERE (age >= ? AND birth_day > ?) ORDER BY age DESC
+ * ==> Parameters: 20(Integer), 2019-05-11T10:00+08:00[Asia/Shanghai](ZonedDateTime)
+ *
+ * @since 1.2.0
+ */
+@Test
+public void testQueryByCriteriaTimestampByZonedDateTime() {
+    UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampZonedDateTime(1557540000000L);
+    List<User> users = this.userService.list(userQuery.autoWrapper());
     users.forEach(System.out::println);
 }
 ```

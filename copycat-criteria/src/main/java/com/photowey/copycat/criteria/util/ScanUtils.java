@@ -3,6 +3,7 @@ package com.photowey.copycat.criteria.util;
 import com.photowey.copycat.criteria.annotaion.ConditionProcessor;
 import com.photowey.copycat.criteria.constant.QueryConstant;
 import com.photowey.copycat.criteria.processor.CriteriaAnnotationProcessor;
+import com.photowey.copycat.criteria.time.TimeProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -42,6 +43,7 @@ public final class ScanUtils {
      * @param basePackages 扫描的基础包列表
      * @return
      * @throws IOException
+     * @since 1.1.0
      */
     public static Map<Class<? extends Annotation>, CriteriaAnnotationProcessor> doScan(String... basePackages) throws IOException {
         Map<Class<? extends Annotation>, CriteriaAnnotationProcessor> ANNOTATION_PROCESSOR_CACHE = new HashMap<>(32);
@@ -77,6 +79,47 @@ public final class ScanUtils {
         }
 
         return ANNOTATION_PROCESSOR_CACHE;
+    }
+
+    /**
+     * 时间处理器扫描
+     *
+     * @param basePackages 扫描的基础包列表
+     * @return
+     * @throws IOException
+     * @since 1.2.0
+     */
+    public static Map<Class<?>, TimeProcessor<?>> doTimeScan(String... basePackages) throws IOException {
+        Map<Class<?>, TimeProcessor<?>> TIME_PROCESSOR_CACHE = new HashMap<>(8);
+        PathMatchingResourcePatternResolver pathMatchingResourcePatternResolver = new PathMatchingResourcePatternResolver();
+        CachingMetadataReaderFactory cachingMetadataReaderFactory = new CachingMetadataReaderFactory();
+        for (String basePackage : basePackages) {
+            String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
+                    resolveBasePackage(basePackage) + '/' + QueryConstant.DEFAULT_RESOURCE_PATTERN;
+            Resource[] resources = pathMatchingResourcePatternResolver.getResources(packageSearchPath);
+            for (Resource resource : resources) {
+                try {
+                    MetadataReader metadataReader = cachingMetadataReaderFactory.getMetadataReader(resource);
+                    ClassMetadata classMetadata = metadataReader.getClassMetadata();
+                    if (classMetadata.isInterface() || classMetadata.isAbstract()) {
+                        continue;
+                    }
+                    String className = classMetadata.getClassName();
+                    Class<?> clazz = ClassUtils.forName(className, ScanUtils.class.getClassLoader());
+                    if (TimeProcessor.class.isAssignableFrom(clazz)) {
+                        TimeProcessor processor = (TimeProcessor) clazz.getDeclaredConstructor().newInstance();
+                        TIME_PROCESSOR_CACHE.put(clazz, processor);
+                        log.info("the condition time:[{}],and processor:[{}]", clazz.getSimpleName(), processor.getClass().getSimpleName()
+                        );
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // Ignore
+                }
+            }
+        }
+
+        return TIME_PROCESSOR_CACHE;
     }
 
     public static String convertClassNameToResourcePath(String className) {

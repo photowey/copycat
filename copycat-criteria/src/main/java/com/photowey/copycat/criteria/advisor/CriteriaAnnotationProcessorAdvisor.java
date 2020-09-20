@@ -7,8 +7,9 @@ import com.photowey.copycat.criteria.exception.CopycatException;
 import com.photowey.copycat.criteria.parser.CriteriaFieldParser;
 import com.photowey.copycat.criteria.processor.*;
 import com.photowey.copycat.criteria.query.AbstractQuery;
-import com.photowey.copycat.criteria.util.CriteriaUtils;
 import com.photowey.copycat.criteria.util.ScanUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -20,7 +21,9 @@ import java.util.Map;
  * @author WcJun
  * @date 2019/05/12
  */
-public class CriteriaAnnotationProcessorAdvisor implements ProcessorAdvisor {
+public class CriteriaAnnotationProcessorAdvisor {
+
+    private static final Logger log = LoggerFactory.getLogger(CriteriaAnnotationProcessorAdvisor.class);
 
     /**
      * 条件注解处理器缓存
@@ -28,7 +31,6 @@ public class CriteriaAnnotationProcessorAdvisor implements ProcessorAdvisor {
     protected static Map<Class<? extends Annotation>, CriteriaAnnotationProcessor> ANNOTATION_PROCESSOR_CACHE = null;
 
     static {
-        // handleProcessorCacheByNew();
         handleProcessorCacheByPackageScan();
     }
 
@@ -76,6 +78,7 @@ public class CriteriaAnnotationProcessorAdvisor implements ProcessorAdvisor {
             String basePackage = QueryConstant.ANNOTATION_PROCESSOR_SCAN_BASE_PACKAGE;
             ANNOTATION_PROCESSOR_CACHE = ScanUtils.doScan(basePackage);
         } catch (Exception e) {
+            log.error("do time processor scan exception", e);
             handleProcessorCacheByNew();
         }
     }
