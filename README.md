@@ -55,7 +55,7 @@ List<User> userList = this.userService.list(
 
 
 
-## 二、轻量级 应用
+## 二、轻量级 引用
 
 ```xml
 <properties>
