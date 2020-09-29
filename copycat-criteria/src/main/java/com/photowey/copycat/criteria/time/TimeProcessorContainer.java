@@ -64,4 +64,10 @@ public class TimeProcessorContainer {
     public static Collection<TimeProcessor<?>> timeProcessors() {
         return TIME_PROCESSOR_CACHE.values();
     }
+
+    public static void destroyProcessorCache() {
+        if (null != TIME_PROCESSOR_CACHE && TIME_PROCESSOR_CACHE.size() > 0) {
+            TIME_PROCESSOR_CACHE.clear();
+        }
+    }
 }

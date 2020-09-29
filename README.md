@@ -28,7 +28,10 @@
     * 支持 {@link java.time.LocalTime}  
     * 支持 {@link java.time.ZonedDateTime}  
     * 依然默认采用 {@link java.util.Date}
-    
+-- -
+## v1.3.0
+- 增加 ShutdownHook 手动释放 Processor 缓存
+    * 添加 {@link com.photowey.copycat.criteria.hook.CopycatShutdownHook} 
 
 -- -
 ## 一、需求描述

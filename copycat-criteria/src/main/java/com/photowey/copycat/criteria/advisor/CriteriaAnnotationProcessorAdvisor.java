@@ -133,4 +133,10 @@ public class CriteriaAnnotationProcessorAdvisor {
         // TIMESTAMP
         ANNOTATION_PROCESSOR_CACHE.put(Timestamp.class, new TimestampProcessor());
     }
+
+    public static void destroyProcessorCache() {
+        if (null != ANNOTATION_PROCESSOR_CACHE && ANNOTATION_PROCESSOR_CACHE.size() > 0) {
+            ANNOTATION_PROCESSOR_CACHE.clear();
+        }
+    }
 }
