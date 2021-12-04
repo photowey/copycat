@@ -34,6 +34,12 @@
     * 添加 {@link com.photowey.copycat.criteria.hook.CopycatShutdownHook} 
 
 -- -
+## v1.3.1
+- 合并-PR
+- 增加 License 文件头
+- 更新 test 模块
+
+-- -
 ## 一、需求描述
 
 * 1.1.使用`QueryWrapper`对较少条件进行查询,如下:
