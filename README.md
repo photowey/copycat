@@ -1,4 +1,11 @@
 # Mybatis-Plus 
+
+> 新项目地址:
+>
+> [mybatis-plus-ext](https://github.com/photowey/mybatis-plus-ext)
+>
+> https://github.com/photowey/mybatis-plus-ext
+
 # 单表查询扩展(Copycat)
 > 基于 `Mybatis-Plus` , 通过自定义条件注解,实现自动包装 `QueryWrapper `查询对象
 
