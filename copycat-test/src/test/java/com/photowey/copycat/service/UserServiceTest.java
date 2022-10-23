@@ -15,6 +15,7 @@
  */
 package com.photowey.copycat.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.photowey.copycat.domain.User;
 import com.photowey.copycat.mapper.UserMapper;
 import com.photowey.copycat.query.UserQuery;
@@ -312,5 +313,15 @@ public class UserServiceTest {
         UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampZonedDateTime(1557540000000L);
         List<User> users = this.userService.list(userQuery.autoWrapper());
         users.forEach(System.out::println);
+    }
+
+    @Test
+    public void testSelectAnnotation() {
+        UserQuery userQuery = new UserQuery().setAge(20).setBirthDayTimestampZonedDateTime(1557540000000L);
+
+        QueryWrapper<User> userQueryWrapper = userQuery.autoWrapper();
+        String sqlSelect = userQueryWrapper.getSqlSelect();
+
+        Assert.assertEquals("@Select sql error", "id,name", sqlSelect);
     }
 }

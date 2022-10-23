@@ -128,6 +128,9 @@ public class UserQuery extends AbstractQuery<User> implements Serializable {
     @NotLike(alias = "name")
     private String userNameNot;
 
+    @Select(value = {"id", "name"})
+    private String fields;
+
     public Long getUserId() {
         return this.userId;
     }
@@ -260,6 +263,16 @@ public class UserQuery extends AbstractQuery<User> implements Serializable {
 
     public UserQuery setBirthDayTimestampZonedDateTime(Long birthDayTimestampZonedDateTime) {
         this.birthDayTimestampZonedDateTime = birthDayTimestampZonedDateTime;
+        return this;
+    }
+
+    public String getFields() {
+        return fields;
+    }
+
+    public UserQuery setFields(String fields) {
+        this.fields = fields;
+
         return this;
     }
 }
