@@ -5,6 +5,9 @@
 > [mybatis-plus-ext](https://github.com/photowey/mybatis-plus-ext)
 >
 > https://github.com/photowey/mybatis-plus-ext
+>
+> - 发布 `v1.0.0`
+> - 开发 `v1.1.0`
 
 # 单表查询扩展(Copycat)
 > 基于 `Mybatis-Plus` , 通过自定义条件注解,实现自动包装 `QueryWrapper `查询对象
@@ -36,26 +39,37 @@
     * 支持 {@link java.time.ZonedDateTime}  
     * 依然默认采用 {@link java.util.Date}
 -- -
+
 ## v1.3.0
+
 - 增加 ShutdownHook 手动释放 Processor 缓存
-    * 添加 {@link com.photowey.copycat.criteria.hook.CopycatShutdownHook} 
+  * 添加 {@link com.photowey.copycat.criteria.hook.CopycatShutdownHook}
 
 -- -
+
 ## v1.3.1
+
 - 合并-PR
 - 增加 License 文件头
 - 更新 test 模块
 
+## v1.3.2
+
+- 新增 `Select` 注解(静态属性)
+- 新增 `DynacmicSelect` 注解
+
 -- -
+
 ## 一、需求描述
 
 * 1.1.使用`QueryWrapper`对较少条件进行查询,如下:
+
 ```java
-List<User> userList = userMapper.selectList(
+List<User> userList=userMapper.selectList(
         new QueryWrapper<User>()
-                .lambda()
-                .ge(User::getAge, 18)
-);
+        .lambda()
+        .ge(User::getAge,18)
+        );
 ```
 * 1.2.往往在真实情况下,前端一般有很多的查询条件传入后台,此时不得不手动的去包装我们的查询条件,如下:
 ```java
