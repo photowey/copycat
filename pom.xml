@@ -21,7 +21,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <mybatis-plus.version>3.4.0</mybatis-plus.version>
-        <spring-core.version>5.3.20</spring-core.version>
+        <spring-core.version>5.3.26</spring-core.version>
         <slf4j-log.version>1.7.25</slf4j-log.version>
 
         <license-maven-plugin.version>3.0</license-maven-plugin.version>
